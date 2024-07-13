@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <conversionRule conversionWord="maskedMsg"
+                    converterClass="com.simba.quartz.config.SensitiveDataMaskerUtil" />
+    <property name="logFilename" value="app-log" />
+    <property name="logDate" value="${LOG_DATE:-%d{yyyy-MM-dd}}" />
+    <appender name="file-log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${ligare.log.filename}.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %maskedMsg(%msg) %n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${ligare.log.filename}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    <appender name="demo" class="ch.qos.logback.core.ConsoleAppender" level="INFO">
+        <encoder>
+            <pattern>[%-5level] %logger{15} - %maskedMsg(%msg) %n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="io.netty.util.internal.PlatformDependent" level="ERROR">
+        <appender-ref ref="demo"/>
+    </logger>
+
+    <logger name="LoggerServiceImpl" level="info" additivity="false">
+        <appender-ref ref="file-log" />
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="file-log" />
+        <appender-ref ref="demo" />
+    </root>
+
+</configuration>
